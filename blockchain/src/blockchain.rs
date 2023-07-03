@@ -1,9 +1,9 @@
-extern crate time;
 extern crate serde;
 extern crate serde_json;
 extern crate sha2;
+extern crate time;
 
-use self::sha2::{Sha256, Digest};
+use self::sha2::{Digest, Sha256};
 use std::fmt::Write;
 
 #[derive(Debug, Clone, Serialize)]
@@ -26,7 +26,7 @@ pub struct Blockheader {
 pub struct Block {
     header: Blockheader,
     count: u32,
-    transactions: Vec<Transaction>
+    transactions: Vec<Transaction>,
 }
 
 pub struct Chain {
@@ -44,7 +44,7 @@ impl Chain {
             curr_transaction: Vec::new(),
             difficulty,
             miner_addr,
-            reward: 100.0
+            reward: 100.0,
         };
 
         chain.generate_new_block();
@@ -69,7 +69,7 @@ impl Chain {
         let mut block = Block {
             header,
             count: 0,
-            transactions: vec![]
+            transactions: vec![],
         };
 
         block.transactions.push(reward_trans);
@@ -84,8 +84,10 @@ impl Chain {
     }
 
     pub fn new_transaction(&mut self, sender: String, receiver: String, amount: f32) -> bool {
-        self.curr_transaction.push( Transaction{
-            sender, receiver, amount
+        self.curr_transaction.push(Transaction {
+            sender,
+            receiver,
+            amount,
         });
         true
     }
@@ -93,7 +95,7 @@ impl Chain {
     pub fn last_hash(&self) -> String {
         let block = match self.chain.last() {
             Some(block) => block,
-            None => return String::from_utf8(vec![48; 64]).unwrap()
+            None => return String::from_utf8(vec![48; 64]).unwrap(),
         };
         Chain::hash(&block.header)
     }
@@ -115,7 +117,7 @@ impl Chain {
             merkle.push(hash);
         }
 
-        if merkle.len() % 2 ==1 {
+        if merkle.len() % 2 == 1 {
             let last = merkle.last().cloned().unwrap();
             merkle.push(last);
         }
@@ -142,10 +144,10 @@ impl Chain {
                         println!("Block hash: {}", hash);
                         break;
                     }
-                },
+                }
                 Err(_) => {
                     header.nonce += 1;
-                    continue
+                    continue;
                 }
             }
         }

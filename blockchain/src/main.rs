@@ -2,8 +2,8 @@
 extern crate serde_derive;
 
 use std::io;
+use std::io::{Read, Write};
 use std::process;
-use std::io::{Write, Read};
 
 mod blockchain;
 
@@ -18,7 +18,10 @@ fn main() {
     println!("Difficulty: ");
     io::stdout().flush();
     io::stdin().read_line(&mut difficulty);
-    let diff = difficulty.trim().parse::<u32>().expect("we need an integer");
+    let diff = difficulty
+        .trim()
+        .parse::<u32>()
+        .expect("we need an integer");
     println!("Generating genesis block!");
     let mut chain = blockchain::Chain::new(miner_addr.trim().to_string(), diff);
 
@@ -37,7 +40,7 @@ fn main() {
             0 => {
                 println!("Exiting");
                 process::exit(0);
-            },
+            }
             1 => {
                 let mut sender = String::new();
                 let mut receiver = String::new();
@@ -56,13 +59,14 @@ fn main() {
                 let res = chain.new_transaction(
                     sender.trim().to_string(),
                     receiver.trim().to_string(),
-                    amount.trim().parse().unwrap());
+                    amount.trim().parse().unwrap(),
+                );
 
                 match res {
                     true => println!("transaction added"),
-                    false => println!("transaction failed")
+                    false => println!("transaction failed"),
                 }
-            },
+            }
             2 => {
                 println!("Generating block");
                 let res = chain.generate_new_block();
@@ -70,7 +74,7 @@ fn main() {
                     true => println!("Block generated successfully"),
                     false => println!("Block generation failed"),
                 }
-            },
+            }
             3 => {
                 let mut new_diff = String::new();
                 println!("Please enter new difficulty: ");
@@ -81,7 +85,7 @@ fn main() {
                     true => println!("Updated difficulty"),
                     false => println!("Failed update"),
                 }
-            },
+            }
             4 => {
                 let mut new_reward = String::new();
                 println!("Enter new reward: ");
@@ -92,7 +96,7 @@ fn main() {
                     true => println!("Updated reward"),
                     false => println!("Failed update"),
                 }
-            },
+            }
             _ => println!("Invalid choise please try again"),
         };
     }
